@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mantup Food Delivery — Pesan Makanan Lokal</title>
+
+  <!-- Google Font (gratis) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --orange: #FFA500;
+      --yellow: #FFD700;
+      --bg: #FFFDF8; /* off-white */
+      --muted: #6b6b6b;
+      --card-shadow: 0 8px 24px rgba(15,15,15,0.08);
+      --radius: 12px;
+      --max-width: 1100px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, var(--bg) 0%, #fff 100%);
+      color:#222;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom:60px; /* room for footer */
+    }
+
+    /* Container */
+    .wrap{
+      max-width: var(--max-width);
+      margin: 28px auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      color:inherit;
+    }
+    .logo{
+      width:56px;
+      height:56px;
+      background: linear-gradient(135deg,var(--orange),var(--yellow));
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-weight:700;
+      box-shadow: var(--card-shadow);
+      flex-shrink:0;
+    }
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:0.2px;
+    }
+    .brand p{margin:0;color:var(--muted);font-size:13px}
+
+    /* Hero / search */
+    .hero{
+      display:flex;
+      gap:18px;
+      align-items:center;
+      margin-bottom:22px;
+      flex-wrap:wrap;
+    }
+    .hero .intro{
+      flex:1 1 320px;
+      min-width:220px;
+      background:linear-gradient(180deg,rgba(255,165,0,0.08),rgba(255,215,0,0.03));
+      padding:18px;
+      border-radius:14px;
+    }
+    .intro h2{margin:0 0 8px 0;font-size:20px}
+    .intro p{margin:0;color:var(--muted)}
+    .hero .hero-image{
+      width:220px;
+      height:120px;
+      border-radius:12px;
+      overflow:hidden;
+      flex-shrink:0;
+      box-shadow: var(--card-shadow);
+      border: 4px solid rgba(255,255,255,0.6);
+    }
+    .hero .hero-image img{width:100%;height:100%;object-fit:cover;display:block}
+
+    /* Grid of menu cards */
+    .menu-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:18px;
+      margin-top:8px;
+    }
+    .card{
+      background:white;
+      border-radius:var(--radius);
+      overflow:hidden;
+      box-shadow: var(--card-shadow);
+      display:flex;
+      flex-direction:column;
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .card:hover{transform:translateY(-6px)}
+    .card .photo{
+      width:100%;
+      height:160px;
+      background:#f5f5f5;
+      overflow:hidden;
+    }
+    .card .photo img{width:100%;height:100%;object-fit:cover;display:block}
+    .card .body{
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      flex:1;
+    }
+    .card h3{margin:0;font-size:16px}
+    .card p.desc{margin:0;color:var(--muted);font-size:13px;flex:1}
+    .meta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .price{
+      font-weight:700;
+      color:#222;
+    }
+    .btn{
+      background:linear-gradient(90deg,var(--orange),var(--yellow));
+      color:white;
+      border:none;
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+      box-shadow: 0 6px 16px rgba(255,165,0,0.16);
+      transition:transform .12s ease;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{
+      background:transparent;
+      color:var(--orange);
+      border:1px solid rgba(255,165,0,0.12);
+      box-shadow:none;
+      font-weight:600;
+    }
+
+    /* Footer */
+    footer{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      background:linear-gradient(90deg, rgba(255,165,0,0.06), rgba(255,215,0,0.02));
+      border-top:1px solid rgba(0,0,0,0.04);
+      padding:10px 0;
+      box-shadow: 0 -6px 20px rgba(15,15,15,0.03);
+    }
+    .footer-inner{
+      max-width:var(--max-width);
+      margin:0 auto;
+      padding:6px 20px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    /* Modal (order panel) */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(5,5,5,0.4);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:80;
+    }
+    .overlay.open{display:flex}
+    .panel{
+      width:100%;
+      max-width:520px;
+      background:white;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow: 0 24px 48px rgba(15,15,15,0.28);
+      animation:pop .14s ease;
+    }
+    @keyframes pop{from{transform:translateY(8px) scale(.99);opacity:0}to{transform:none;opacity:1}}
+    .panel .p-head{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:14px;
+      border-bottom:1px solid #f2f2f2;
+    }
+    .panel .p-body{padding:14px;display:grid;gap:10px}
+    .panel label{font-size:13px;color:var(--muted)}
+    .panel input[type="text"], .panel input[type="number"], .panel textarea, .panel select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #eee;
+      font-size:14px;
+      outline:none;
+    }
+    .row{display:flex;gap:8px}
+    .row .col{flex:1}
+    .totals{display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px dashed #eee}
+    .small{font-size:13px;color:var(--muted)}
+
+    /* Responsive tweaks */
+    @media (max-width:520px){
+      .hero{flex-direction:column;align-items:stretch}
+      .hero .hero-image{width:100%;height:140px}
+      .brand h1{font-size:16px}
+      .wrap{margin:18px auto}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Header -->
+    <header>
+      <a class="brand" href="#">
+        <div class="logo" aria-hidden="true">MF</div>
+        <div>
+          <h1>Mantup Food Delivery</h1>
+          <p>Pesan makanan lokal, cepat sampai</p>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <button class="btn secondary" onclick="scrollToMenu()">Lihat Menu</button>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="intro">
+        <h2 id="hero-heading">Makan Mantap, Antar Cepat</h2>
+        <p>Menu pilihan dari warung lokal Mantup. Pilih menu, tentukan alamat, dan kirim pesanan lewat WhatsApp — mudah dan cepat.</p>
+      </div>
+      <div class="hero-image" aria-hidden="true">
+        <img src="https://source.unsplash.com/520x320/?indonesian-food,plate" alt="Foto makanan Mantup">
+      </div>
+    </section>
+
+    <!-- Menu Grid -->
+    <main>
+      <h3 style="margin:0 0 10px 0">Menu Kami</h3>
+      <div id="menuGrid" class="menu-grid" role="list">
+        <!-- Cards akan di-generate oleh JavaScript untuk memudahkan edit di masa depan -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer (fixed) -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <strong>Kontak:</strong> <span id="footer-phone">+62 857-0431-0052</span> — <span class="small">Jam operasional: 09:00 - 21:30</span>
+      </div>
+      <div style="text-align:right">
+        <div><strong>Tarif Ongkir Mantup</strong></div>
+        <div class="small">Rp 2.000 - Rp 5.000 untuk area Mantup</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal / Order Panel -->
+  <div id="overlay" class="overlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="panel" role="document">
+      <div class="p-head">
+        <div style="flex:1">
+          <strong id="panel-title">Pesan</strong>
+          <div class="small" id="panel-sub">Detail pesanan</div>
+        </div>
+        <div>
+          <button class="btn secondary" onclick="closePanel()">Tutup</button>
+        </div>
+      </div>
+
+      <div class="p-body">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="width:88px;height:60px;border-radius:8px;overflow:hidden;background:#f4f4f4" id="panel-img">
+            <img src="" alt="" style="width:100%;height:100%;object-fit:cover" />
+          </div>
+          <div>
+            <div id="panel-item" style="font-weight:700"></div>
+            <div id="panel-price" class="small"></div>
+          </div>
+        </div>
+
+        <label for="qty">Jumlah</label>
+        <input id="qty" type="number" value="1" min="1">
+
+        <label for="area">Area (pengaruh ongkir)</label>
+        <select id="area">
+          <option value="mantup">Dalam Mantup — Rp 2.000</option>
+          <option value="luarmantup">Luar Mantup — Rp 5.000</option>
+        </select>
+
+        <label for="customerName">Nama Pemesan</label>
+        <input id="customerName" type="text" placeholder="Contoh: Budi">
+
+        <label for="address">Alamat Lengkap</label>
+        <textarea id="address" rows="3" placeholder="Jalan, RT/RW, Desa, Kode Pos"></textarea>
+
+        <div class="totals">
+          <div>
+            <div class="small">Subtotal</div>
+            <div id="subtotal" style="font-weight:700"></div>
+          </div>
+          <div style="text-align:right">
+            <div class="small">Total (termasuk ongkir)</div>
+            <div id="grandtotal" style="font-weight:700;color:var(--orange)"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px">
+          <button class="btn secondary" onclick="closePanel()">Batalkan</button>
+          <button class="btn" id="sendWhatsappBtn">Kirim via WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==============
+       Konfigurasi singkat
+       Ganti WHATSAPP_NUMBER sesuai nomor tujuan (format internasional tanpa tanda +, contoh: 6281234567890)
+       ============== */
+    const WHATSAPP_NUMBER = "6285704310052";// <-- ubah nomor tujuan di sini
+
+    /* Data menu — mudah untuk ditambah/diubah */
+    const menuItems = [
+      {
+        id: "nasi-goreng-mantup",
+        name: "Nasi Goreng Mantup",
+        description: "Nasi goreng special dengan bumbu rahasia & irisan ayam, pedas level sedang.",
+        price: 18000,
+        img: "https://source.unsplash.com/800x600/?nasi-goreng,indonesia"
+      },
+      {
+        id: "ayam-geprek-mantup",
+        name: "Ayam Geprek Mantup",
+        description: "Ayam goreng tepung digeprek pedas, disantap hangat bersama sambal khas.",
+        price: 22000,
+        img: "https://source.unsplash.com/800x600/?ayam-geprek,spicy-chicken"
+      },
+      {
+        id: "mie-ayam-spesial",
+        name: "Mie Ayam Spesial",
+        description: "Mie kenyal dengan topping ayam cincang dan pangsit goreng.",
+        price: 16000,
+        img: "https://source.unsplash.com/800x600/?mie-ayam,noodles"
+      }
+    ];
+
+    // Utility: format rupiah
+    function formatRupiah(num){
+      return "Rp " + Number(num).toLocaleString('id-ID');
+    }
+
+    // Render menu cards dynamic agar mudah diedit di masa depan
+    const menuGrid = document.getElementById("menuGrid");
+    function renderMenu(){
+      menuGrid.innerHTML = "";
+      menuItems.forEach((item, idx) => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.setAttribute("role","listitem");
+        card.innerHTML = `
+          <div class="photo"><img src="${item.img}" alt="${escapeHtml(item.name)}"></div>
+          <div class="body">
+            <h3>${escapeHtml(item.name)}</h3>
+            <p class="desc">${escapeHtml(item.description)}</p>
+            <div class="meta">
+              <div class="price">${formatRupiah(item.price)}</div>
+              <div>
+                <button class="btn" data-idx="${idx}" onclick="openOrderPanel(${idx})">Pesan Sekarang</button>
+              </div>
+            </div>
+          </div>
+        `;
+        menuGrid.appendChild(card);
+      });
+    }
+
+    // Simple escaping for safety in innerHTML templates
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Scroll to menu section
+    function scrollToMenu(){
+      document.getElementById("menuGrid").scrollIntoView({behavior:"smooth"});
+    }
+
+    // Order panel logic
+    const overlay = document.getElementById("overlay");
+    const panelTitle = document.getElementById("panel-title");
+    const panelSub = document.getElementById("panel-sub");
+    const panelImg = document.querySelector("#panel-img img");
+    const panelItem = document.getElementById("panel-item");
+    const panelPrice = document.getElementById("panel-price");
+    const qtyInput = document.getElementById("qty");
+    const areaSelect = document.getElementById("area");
+    const customerName = document.getElementById("customerName");
+    const address = document.getElementById("address");
+    const subtotalEl = document.getElementById("subtotal");
+    const grandtotalEl = document.getElementById("grandtotal");
+    const sendWhatsappBtn = document.getElementById("sendWhatsappBtn");
+
+    let currentItem = null;
+
+    function openOrderPanel(index){
+      currentItem = menuItems[index];
+      panelTitle.textContent = "Pesan: " + currentItem.name;
+      panelSub.textContent = currentItem.description;
+      panelImg.src = currentItem.img;
+      panelImg.alt = currentItem.name;
+      panelItem.textContent = currentItem.name;
+      panelPrice.textContent = formatRupiah(currentItem.price);
+      qtyInput.value = 1;
+      customerName.value = "";
+      address.value = "";
+      areaSelect.value = "mantup";
+      updateTotals();
+      overlay.classList.add("open");
+      overlay.setAttribute("aria-hidden","false");
+    }
+
+    function closePanel(){
+      overlay.classList.remove("open");
+      overlay.setAttribute("aria-hidden","true");
+      currentItem = null;
+    }
+
+    function updateTotals(){
+      const qty = Math.max(1, parseInt(qtyInput.value || 1));
+      const itemTotal = currentItem ? currentItem.price * qty : 0;
+      const ongkir = areaSelect.value === "mantup" ? 2000 : 5000;
+      subtotalEl.textContent = formatRupiah(itemTotal);
+      grandtotalEl.textContent = formatRupiah(itemTotal + ongkir);
+    }
+
+    // Recalculate when inputs change
+    qtyInput.addEventListener("input", updateTotals);
+    areaSelect.addEventListener("change", updateTotals);
+
+    // Send to WhatsApp with prefilled message
+    sendWhatsappBtn.addEventListener("click", function(){
+      const qty = Math.max(1, parseInt(qtyInput.value || 1));
+      const ongkir = areaSelect.value === "mantup" ? 2000 : 5000;
+      const itemTotal = currentItem.price * qty;
+      const grand = itemTotal + ongkir;
+      const name = customerName.value.trim() || "[Nama belum diisi]";
+      const addr = address.value.trim() || "[Alamat belum diisi]";
+
+      // Compose message
+      const message = [
+        "Halo Mantup Food Delivery 👋",
+        "",
+        "Saya ingin memesan:",
+        `• Item: ${currentItem.name}`,
+        `• Jumlah: ${qty}`,
+        `• Harga satuan: ${formatRupiah(currentItem.price)}`,
+        `• Subtotal: ${formatRupiah(itemTotal)}`,
+        `• Ongkir: ${formatRupiah(ongkir)}`,
+        `• Total: ${formatRupiah(grand)}`,
+        "",
+        `Nama: ${name}`,
+        `Alamat: ${addr}`,
+        "",
+        "Mohon konfirmasi ketersediaan & estimasi waktu antar. Terima kasih!"
+      ].join("\n");
+
+      // Build wa.me link
+      if (!WHATSAPP_NUMBER || WHATSAPP_NUMBER.length < 6) {
+        alert("Nomor WhatsApp belum dikonfigurasi. Silakan atur variabel WHATSAPP_NUMBER di file HTML.");
+        return;
+      }
+      const url = `https://wa.me/${6285704310052}?text=${encodeURIComponent(message)}`;
+
+      // Open WhatsApp in new tab
+      window.open(url, "_blank");
+      // Optional: close modal after redirecting
+      closePanel();
+    });
+
+    // Close modal when clicking overlay background
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closePanel();
+    });
+
+    // Initial render
+    renderMenu();
+
+    // For quick demo: set footer phone and show note (user bisa ganti)
+    document.getElementById("footer-phone").textContent = "+62 857-0431-0052";
+
+    // Accessibility improvement: close modal with Esc
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("open")) closePanel();
+    });
+  </script>
+</body>
+</html>
